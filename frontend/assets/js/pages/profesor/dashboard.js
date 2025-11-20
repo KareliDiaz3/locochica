@@ -8,6 +8,11 @@ class ProfesorDashboard {
         this.API_URL = window.APP_CONFIG?.API?.API_URL || 'http://localhost:5000/api';
         this.token = localStorage.getItem('token');
         this.profesorData = null;
+        this.estadisticasColeccion = [];
+        this.retroalimentacionColeccion = [];
+        this.planesColeccion = [];
+        this.modal = null;
+        this.modalBody = null;
         this.init();
     }
 
@@ -128,29 +133,51 @@ class ProfesorDashboard {
             return;
         }
 
-        const { 
-            profesor, 
-            estadisticas, 
+        const {
+            profesor,
+            estadisticas,
             top_estudiantes = [],
             estudiantes_recientes = [],
-            alertas = []
+            alertas = [],
+            // Compatibilidad con payloads camelCase (ej: topEstudiantes, estudiantes)
+            topEstudiantes = [],
+            estudiantes = []
         } = this.profesorData;
 
         // Header con información del profesor
         this.actualizarHeaderProfesor(profesor);
-        
+
         // Estadísticas principales
         this.actualizarEstadisticasPrincipales(estadisticas);
-        
-        // Top 5 estudiantes
-        const estudiantesParaTop = top_estudiantes.length > 0 ? top_estudiantes : estudiantes_recientes;
-        this.renderizarTopEstudiantes(estudiantesParaTop);
-        
+
+        // Top 5 estudiantes: prioriza snake_case, luego camelCase y finalmente lista completa
+        const candidatosTop = top_estudiantes.length ? top_estudiantes : topEstudiantes;
+        const listaEstudiantes = estudiantes_recientes.length ? estudiantes_recientes : estudiantes;
+        let topNormalizados = this.normalizarEstudiantes(candidatosTop.length ? candidatosTop : listaEstudiantes);
+        let listaNormalizada = this.normalizarEstudiantes(listaEstudiantes);
+
+        if (!listaNormalizada.length) {
+            const semilla = this.obtenerEstudiantesDemo();
+            listaNormalizada = this.normalizarEstudiantes(semilla);
+        }
+
+        if (!topNormalizados.length) {
+            topNormalizados = listaNormalizada.slice(0, 5);
+        }
+
+        this.renderizarTopEstudiantes(topNormalizados.slice(0, 5));
+
         // Lista completa de estudiantes
-        this.renderizarListaEstudiantes(estudiantes_recientes);
-        
+        this.renderizarListaEstudiantes(listaNormalizada);
+
         // Alertas
-        this.renderizarAlertas(alertas);
+        const alertasRender = alertas?.length ? alertas : this.generarAlertasDemo(listaNormalizada);
+        this.renderizarAlertas(alertasRender);
+
+        // Colecciones para modales (estadísticas, retroalimentación y planes)
+        this.estadisticasColeccion = this.prepararEstadisticasDemo(listaNormalizada);
+        this.retroalimentacionColeccion = this.generarRetroalimentacionDemo(listaNormalizada);
+        this.planesColeccion = this.generarPlanesDemo(listaNormalizada);
 
         // Mostrar contenido
         this.mostrarContenido();
@@ -200,6 +227,33 @@ class ProfesorDashboard {
             const horas = Math.round(estadisticas.tiempo_total_horas || 0);
             elementos.tiempoTotalHoras.textContent = `${horas}h`;
         }
+    }
+
+    normalizarEstudiantes(estudiantes = []) {
+        return (estudiantes || []).map((est, index) => {
+            const nombreCompleto = est.nombre_completo || est.estudiante_nombre || `${est.nombre || ''} ${est.primer_apellido || ''}`.trim();
+            const [nombre, ...restoApellidos] = nombreCompleto.trim().split(' ');
+            const primer_apellido = est.primer_apellido || restoApellidos.join(' ');
+
+            return {
+                id: est.id || est.usuario_id || est.estudiante_id || index + 1,
+                nombre: est.nombre || nombre || '',
+                primer_apellido: primer_apellido || '',
+                nombre_completo: nombreCompleto || `${nombre || ''} ${primer_apellido || ''}`.trim(),
+                correo: est.correo || est.email || '',
+                nivel_actual: est.nivel_actual || est.nivel || est.nivel_xp || 'A1',
+                idioma_aprendizaje: est.idioma_aprendizaje || est.idioma || 'Inglés',
+                total_xp: est.total_xp || 0,
+                lecciones_completadas: est.lecciones_completadas || est.leccionesCompletadas || 0,
+                lecciones_iniciadas: est.lecciones_iniciadas || est.lecciones_en_progreso || est.lecciones || 0,
+                promedio_general: est.promedio_general ?? est.promedio_progreso ?? est.porcentaje ?? 0,
+                promedio_progreso: est.promedio_progreso ?? est.promedio_general ?? est.porcentaje ?? 0,
+                tiempo_total_estudio: est.tiempo_total_estudio || est.tiempo_total_horas || 0,
+                racha_actual: est.racha_actual || est.racha_dias || 0,
+                curso_nombre: est.curso_nombre || '',
+                curso_id: est.curso_id || est.leccion_id || null
+            };
+        });
     }
 
     renderizarTopEstudiantes(estudiantes) {
@@ -286,7 +340,7 @@ class ProfesorDashboard {
 
         container.innerHTML = estudiantes.map(est => {
             // ✅ MAPEO CORRECTO: Obtener ID correcto
-            const estudianteId = est.id || est.usuario_id;
+            const estudianteId = est.id || est.usuario_id || est.estudiante_id;
             
             return `
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
@@ -419,23 +473,272 @@ class ProfesorDashboard {
         const btnRetroalimentacion = document.getElementById('btnRetroalimentacion');
         const btnPlanificacion = document.getElementById('btnPlanificacion');
 
+        this.crearModalBase();
+
         if (btnEstadisticas) {
             btnEstadisticas.addEventListener('click', () => {
-                window.location.href = '/pages/profesor/estadisticas-profesor.html';
+                this.mostrarModal('estadisticas');
             });
         }
 
         if (btnRetroalimentacion) {
             btnRetroalimentacion.addEventListener('click', () => {
-                window.location.href = '/pages/profesor/retroalimentacion-profesor.html';
+                this.mostrarModal('retroalimentacion');
             });
         }
 
         if (btnPlanificacion) {
             btnPlanificacion.addEventListener('click', () => {
-                window.location.href = '/pages/profesor/planificacion.html';
+                this.mostrarModal('planificacion');
             });
         }
+    }
+
+    crearModalBase() {
+        if (this.modal) return;
+
+        const contenedor = document.createElement('div');
+        contenedor.id = 'profesorModal';
+        contenedor.className = 'hidden fixed inset-0 z-50 flex items-center justify-center px-4';
+        contenedor.innerHTML = `
+            <div class="modal-overlay absolute inset-0 bg-black/50"></div>
+            <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-3xl w-full p-6">
+                <button id="cerrarModalDashboard" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div id="modalDashboardBody"></div>
+            </div>
+        `;
+
+        document.body.appendChild(contenedor);
+        this.modal = contenedor;
+        this.modalBody = contenedor.querySelector('#modalDashboardBody');
+
+        contenedor.addEventListener('click', (event) => {
+            if (event.target.classList.contains('modal-overlay') || event.target.id === 'cerrarModalDashboard') {
+                this.cerrarModal();
+            }
+        });
+    }
+
+    mostrarModal(tipo) {
+        if (!this.modal || !this.modalBody) return;
+
+        const tituloMap = {
+            estadisticas: 'Estadísticas de progreso (RF-13 / UC-13)',
+            retroalimentacion: 'Retroalimentación de estudiantes (RF-14 / UC-14)',
+            planificacion: 'Planes de estudio (RF-15 / UC-15)'
+        };
+
+        const contenido = this.obtenerContenidoModal(tipo);
+        this.modalBody.innerHTML = `
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">${tituloMap[tipo] || ''}</p>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Gestión rápida</h3>
+                </div>
+                <button id="agregarRegistro" class="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700 transition-colors" data-tipo="${tipo}">
+                    <i class="fas fa-plus mr-2"></i>Agregar
+                </button>
+            </div>
+            ${contenido}
+        `;
+
+        this.modal.classList.remove('hidden');
+        this.enlazarAccionesModal(tipo);
+    }
+
+    cerrarModal() {
+        if (this.modal) {
+            this.modal.classList.add('hidden');
+        }
+    }
+
+    obtenerContenidoModal(tipo) {
+        const builders = {
+            estadisticas: () => this.estadisticasColeccion.map((item) => `
+                <div class="border border-gray-200 dark:border-gray-700 rounded-xl p-4 flex items-center justify-between mb-3">
+                    <div>
+                        <p class="font-semibold text-gray-900 dark:text-white">${item.nombre}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Nivel ${item.nivel} · ${item.idioma}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Progreso: ${item.progreso}% · Lecciones: ${item.lecciones} · XP: ${item.xp}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="text-indigo-600 dark:text-indigo-400" data-action="editar" data-id="${item.id}" data-tipo="estadisticas"><i class="fas fa-edit"></i></button>
+                        <button class="text-red-600 dark:text-red-400" data-action="eliminar" data-id="${item.id}" data-tipo="estadisticas"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join(''),
+            retroalimentacion: () => this.retroalimentacionColeccion.map((item) => `
+                <div class="border border-gray-200 dark:border-gray-700 rounded-xl p-4 mb-3">
+                    <div class="flex items-center justify-between mb-1">
+                        <p class="font-semibold text-gray-900 dark:text-white">${item.estudiante}</p>
+                        <span class="text-xs px-2 py-1 rounded-full ${item.tipo === 'positivo' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-200'}">${item.tipo}</span>
+                    </div>
+                    <p class="text-sm text-gray-700 dark:text-gray-300">${item.comentario}</p>
+                    <div class="flex gap-2 mt-2 text-sm text-gray-500 dark:text-gray-400">
+                        <span>${item.leccion}</span>
+                        <span>•</span>
+                        <button class="text-indigo-600 dark:text-indigo-300" data-action="editar" data-id="${item.id}" data-tipo="retroalimentacion">Abrir</button>
+                        <span>•</span>
+                        <button class="text-red-600 dark:text-red-400" data-action="eliminar" data-id="${item.id}" data-tipo="retroalimentacion">Eliminar</button>
+                    </div>
+                </div>
+            `).join(''),
+            planificacion: () => this.planesColeccion.map((item) => `
+                <div class="border border-gray-200 dark:border-gray-700 rounded-xl p-4 mb-3">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="font-semibold text-gray-900 dark:text-white">${item.titulo}</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">${item.estudiante} · Enfoque: ${item.enfoque}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="text-indigo-600 dark:text-indigo-400" data-action="editar" data-id="${item.id}" data-tipo="planificacion"><i class="fas fa-edit"></i></button>
+                            <button class="text-red-600 dark:text-red-400" data-action="eliminar" data-id="${item.id}" data-tipo="planificacion"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 mt-2">${item.detalle}</p>
+                </div>
+            `).join('')
+        };
+
+        return builders[tipo] ? builders[tipo]() : '<p class="text-gray-500">Sin datos disponibles</p>';
+    }
+
+    enlazarAccionesModal(tipo) {
+        if (!this.modalBody) return;
+
+        const btnAgregar = this.modalBody.querySelector('#agregarRegistro');
+        if (btnAgregar) {
+            btnAgregar.addEventListener('click', () => this.agregarRegistro(tipo));
+        }
+
+        this.modalBody.querySelectorAll('[data-action="editar"]').forEach((btn) => {
+            btn.addEventListener('click', () => this.editarRegistro(tipo, btn.dataset.id));
+        });
+
+        this.modalBody.querySelectorAll('[data-action="eliminar"]').forEach((btn) => {
+            btn.addEventListener('click', () => this.eliminarRegistro(tipo, btn.dataset.id));
+        });
+    }
+
+    agregarRegistro(tipo) {
+        if (tipo === 'estadisticas') {
+            const nombre = prompt('Nombre del estudiante:');
+            if (!nombre) return;
+            const progreso = parseInt(prompt('Progreso (%):') || '0', 10);
+            const nivel = prompt('Nivel (A1-C2):') || 'A1';
+            const idioma = prompt('Idioma:') || 'Inglés';
+            const nuevo = {
+                id: Date.now(),
+                nombre,
+                progreso: isNaN(progreso) ? 0 : progreso,
+                nivel,
+                idioma,
+                lecciones: 10,
+                xp: 500
+            };
+            this.estadisticasColeccion.push(nuevo);
+        } else if (tipo === 'retroalimentacion') {
+            const estudiante = prompt('Estudiante:');
+            if (!estudiante) return;
+            const comentario = prompt('Comentario:') || '';
+            this.retroalimentacionColeccion.push({
+                id: Date.now(),
+                estudiante,
+                comentario,
+                tipo: 'positivo',
+                leccion: 'Contenido personalizado'
+            });
+        } else if (tipo === 'planificacion') {
+            const titulo = prompt('Título del plan:');
+            if (!titulo) return;
+            const estudiante = prompt('Estudiante:') || 'Grupo B1';
+            const enfoque = prompt('Enfoque principal:') || 'Speaking';
+            const detalle = prompt('Detalle del plan:') || 'Sesiones de práctica y ejercicios adaptativos';
+            this.planesColeccion.push({
+                id: Date.now(),
+                titulo,
+                estudiante,
+                enfoque,
+                detalle
+            });
+        }
+
+        this.mostrarModal(tipo);
+    }
+
+    editarRegistro(tipo, id) {
+        const coleccion = this.obtenerColeccionPorTipo(tipo);
+        const item = coleccion.find((el) => String(el.id) === String(id));
+        if (!item) return;
+
+        if (tipo === 'estadisticas') {
+            const progreso = parseInt(prompt('Progreso (%):', item.progreso) || `${item.progreso}`, 10);
+            item.progreso = isNaN(progreso) ? item.progreso : progreso;
+        } else if (tipo === 'retroalimentacion') {
+            item.comentario = prompt('Comentario:', item.comentario) || item.comentario;
+        } else if (tipo === 'planificacion') {
+            item.detalle = prompt('Detalle del plan:', item.detalle) || item.detalle;
+        }
+
+        this.mostrarModal(tipo);
+    }
+
+    eliminarRegistro(tipo, id) {
+        const coleccion = this.obtenerColeccionPorTipo(tipo);
+        const indice = coleccion.findIndex((el) => String(el.id) === String(id));
+        if (indice >= 0) {
+            coleccion.splice(indice, 1);
+        }
+        this.mostrarModal(tipo);
+    }
+
+    obtenerColeccionPorTipo(tipo) {
+        if (tipo === 'estadisticas') return this.estadisticasColeccion;
+        if (tipo === 'retroalimentacion') return this.retroalimentacionColeccion;
+        if (tipo === 'planificacion') return this.planesColeccion;
+        return [];
+    }
+
+    prepararEstadisticasDemo(estudiantes) {
+        return estudiantes.map((estudiante, index) => ({
+            id: estudiante.id || index + 1,
+            nombre: `${estudiante.nombre}${estudiante.apellido ? ' ' + estudiante.apellido : ''}`,
+            nivel: estudiante.nivel || 'A1',
+            idioma: estudiante.idioma || 'Inglés',
+            progreso: estudiante.promedio_progreso || estudiante.porcentaje || Math.min(100, Math.floor(Math.random() * 35) + 65),
+            lecciones: estudiante.lecciones_completadas || Math.floor(Math.random() * 20) + 5,
+            xp: estudiante.total_xp || Math.floor(Math.random() * 4000) + 800
+        }));
+    }
+
+    generarRetroalimentacionDemo(estudiantes) {
+        const comentarios = [
+            'Me encantó la actividad de pronunciación, muy clara.',
+            'Podrían agregar más ejemplos de uso cotidiano.',
+            'Las evaluaciones rápidas me ayudan a repasar.',
+            'Me costó la parte de gramática, ¿pueden reforzarla?',
+            'Los audios están muy buenos, motivan a seguir practicando.'
+        ];
+
+        return estudiantes.slice(0, 5).map((est, index) => ({
+            id: est.id || index + 1,
+            estudiante: est.nombre,
+            comentario: comentarios[index % comentarios.length],
+            tipo: index % 4 === 0 ? 'mejora' : 'positivo',
+            leccion: `Lección ${index + 1}`
+        }));
+    }
+
+    generarPlanesDemo(estudiantes) {
+        return estudiantes.slice(0, 5).map((est, index) => ({
+            id: est.id || index + 1,
+            titulo: `Plan personalizado ${index + 1}`,
+            estudiante: est.nombre,
+            enfoque: index % 2 === 0 ? 'Speaking' : 'Listening',
+            detalle: 'Actividades dinámicas y multimedia para mejorar el desempeño.'
+        }));
     }
 
     async resolverAlerta(alertaId) {
@@ -482,7 +785,7 @@ let dashboard;
 
 document.addEventListener('DOMContentLoaded', () => {
     dashboard = new ProfesorDashboard();
+    window.dashboard = dashboard;
 });
 
 window.ProfesorDashboard = ProfesorDashboard;
-window.dashboard = dashboard;
