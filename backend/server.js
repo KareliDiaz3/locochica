@@ -33,6 +33,7 @@ const gamificacionRoutes = require('./routes/gamificacionRoutes');
 const estadisticasRoutes = require('./routes/estadisticasRoutes');
 const retroalimentacionRoutes = require('./routes/retroalimentacionRoutes');
 const planificacionRoutes = require('./routes/planificacionRoutes');
+const usuarioRoutes = require('./routes/usuarioRoutes');
 
 // ==========================================================
 // IMPORTAR RUTAS DE MÓDULO 4: GESTIÓN DE DESEMPEÑO
@@ -128,6 +129,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // ==========================================================
 
 app.use('/api/auth', authRoutes);
+app.use('/api/usuario', usuarioRoutes);
 app.use('/api/lecciones', leccionRoutes);
 app.use('/api/multimedia', multimediaRoutes);
 app.use('/api/cursos', cursosRoutes);

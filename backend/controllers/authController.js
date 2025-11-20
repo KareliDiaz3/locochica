@@ -310,36 +310,39 @@ exports.iniciarSesion = async (req, res) => {
 
         // Verificar estado de la cuenta
         if (usuario.estado_cuenta === 'bloqueado') {
-            return res.status(401).json({ 
-                error: 'Cuenta bloqueada. Contacta al administrador.' 
+            return res.status(401).json({
+                error: 'Cuenta bloqueada. Contacta al administrador.'
             });
         }
 
         if (usuario.estado_cuenta === 'pendiente_verificacion') {
-            return res.status(401).json({ 
-                error: 'Cuenta pendiente de verificación. Revisa tu email.' 
+            return res.status(401).json({
+                error: 'Cuenta pendiente de verificación. Revisa tu email.'
             });
         }
 
-        if (usuario.estado_cuenta === 'desactivado') {
-            return res.status(401).json({ 
-                error: 'Cuenta desactivada.' 
-            });
-        }
+        const requiereReactivacion = ['desactivado', 'eliminado'].includes(usuario.estado_cuenta);
 
         // Verificar contraseña
         const contrasenaValida = await bcrypt.compare(password, usuario.contrasena_hash);
         if (!contrasenaValida) {
-            return res.status(401).json({ 
+            return res.status(401).json({
                 error: 'Credenciales inválidas' 
             });
         }
 
-        // Actualizar último acceso
-        await database.query(
-            'UPDATE usuarios SET ultimo_acceso = CURRENT_TIMESTAMP WHERE id = ?',
-            [usuario.id]
-        );
+        // Reactivar la cuenta si estaba desactivada o marcada para eliminación
+        if (requiereReactivacion) {
+            await database.query(
+                'UPDATE usuarios SET estado_cuenta = "activo", ultimo_acceso = CURRENT_TIMESTAMP WHERE id = ? LIMIT 1',
+                [usuario.id]
+            );
+        } else {
+            await database.query(
+                'UPDATE usuarios SET ultimo_acceso = CURRENT_TIMESTAMP WHERE id = ?',
+                [usuario.id]
+            );
+        }
 
         // Generar token JWT
         const token = generarToken({ 

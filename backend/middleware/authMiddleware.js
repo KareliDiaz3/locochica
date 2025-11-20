@@ -123,12 +123,15 @@ const verificarToken = async (req, res, next) => {
 
 /**
  * Middleware para verificar que el usuario tenga uno de los roles permitidos
- * @param {string|string[]} rolesPermitidos - Roles que pueden acceder (array o string)
+ * @param {...(string|string[])} rolesPermitidos - Roles permitidos como array o argumentos individuales
  * @returns {Function} Middleware function
  * 
  * @example
  * // Uso con array (RECOMENDADO):
  * router.get('/ruta', verificarRol(['alumno']), controller)
+ *
+ * // Uso con múltiples argumentos:
+ * router.get('/ruta', verificarRol('profesor', 'admin'), controller)
  * 
  * // Uso con múltiples roles:
  * router.get('/ruta', verificarRol(['profesor', 'admin']), controller)
@@ -136,7 +139,7 @@ const verificarToken = async (req, res, next) => {
  * // Uso con string único (también funciona):
  * router.get('/ruta', verificarRol('alumno'), controller)
  */
-const verificarRol = (rolesPermitidos) => {
+const verificarRol = (...rolesPermitidos) => {
     return (req, res, next) => {
         // Verificar que el usuario esté autenticado
         if (!req.user) {
@@ -147,16 +150,26 @@ const verificarRol = (rolesPermitidos) => {
             });
         }
 
-        // CORREGIDO: Asegurarse de que rolesPermitidos sea un array
-        let rolesArray;
-        if (Array.isArray(rolesPermitidos)) {
-            rolesArray = rolesPermitidos;
-        } else {
-            rolesArray = [rolesPermitidos];
+        // CORREGIDO: Asegurarse de que rolesPermitidos sea un array y aceptar argumentos múltiples
+        let rolesArray = rolesPermitidos;
+        if (rolesPermitidos.length === 1 && Array.isArray(rolesPermitidos[0])) {
+            rolesArray = rolesPermitidos[0];
         }
 
+        // Normalizar roles permitidos y soportar alias comunes
+        const normalizarRol = (rol = '') => {
+            const value = rol.toString().toLowerCase();
+            if (['admin', 'administrador'].includes(value)) return 'admin';
+            if (['profesor', 'teacher', 'docente'].includes(value)) return 'profesor';
+            if (['alumno', 'estudiante', 'student'].includes(value)) return 'alumno';
+            return value;
+        };
+
+        const rolesNormalizados = rolesArray.map(normalizarRol);
+        const rolUsuario = normalizarRol(req.user.rol);
+
         // Verificar si el rol del usuario está en los roles permitidos
-        if (!rolesArray.includes(req.user.rol)) {
+        if (!rolesNormalizados.includes(rolUsuario)) {
             console.log(`❌ Acceso denegado: usuario con rol "${req.user.rol}" intentó acceder a recurso que requiere roles: ${rolesArray.join(', ')}`);
             
             return res.status(403).json({
@@ -339,15 +352,22 @@ const verificarProfesor = (req, res, next) => {
         });
     }
 
-    if (req.user.rol !== 'profesor') {
+    // Aceptar variantes del rol profesor para compatibilidad con datos existentes
+    const rolesProfesor = ['profesor', 'teacher'];
+
+    // Permitimos también a administradores acceder para tareas de soporte
+    const rolesPermitidos = [...rolesProfesor, 'admin'];
+
+    if (!rolesPermitidos.includes(req.user.rol)) {
         return res.status(403).json({
             error: 'Acceso denegado. Solo profesores pueden acceder a este recurso.',
             codigo: 'PROFESOR_REQUIRED',
-            tu_rol: req.user.rol
+            tu_rol: req.user.rol,
+            roles_aceptados: rolesPermitidos
         });
     }
 
-    console.log(`✅ Acceso de profesor permitido: ${req.user.id}`);
+    console.log(`✅ Acceso de profesor permitido: ${req.user.id} (rol: ${req.user.rol})`);
     next();
 };
 
