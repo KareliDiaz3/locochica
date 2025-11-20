@@ -156,8 +156,20 @@ const verificarRol = (...rolesPermitidos) => {
             rolesArray = rolesPermitidos[0];
         }
 
+        // Normalizar roles permitidos y soportar alias comunes
+        const normalizarRol = (rol = '') => {
+            const value = rol.toString().toLowerCase();
+            if (['admin', 'administrador'].includes(value)) return 'admin';
+            if (['profesor', 'teacher', 'docente'].includes(value)) return 'profesor';
+            if (['alumno', 'estudiante', 'student'].includes(value)) return 'alumno';
+            return value;
+        };
+
+        const rolesNormalizados = rolesArray.map(normalizarRol);
+        const rolUsuario = normalizarRol(req.user.rol);
+
         // Verificar si el rol del usuario está en los roles permitidos
-        if (!rolesArray.includes(req.user.rol)) {
+        if (!rolesNormalizados.includes(rolUsuario)) {
             console.log(`❌ Acceso denegado: usuario con rol "${req.user.rol}" intentó acceder a recurso que requiere roles: ${rolesArray.join(', ')}`);
             
             return res.status(403).json({
