@@ -683,13 +683,29 @@
             if (response.success) {
                 window.toastManager?.success('Lección creada exitosamente');
                 actividadesPersonalizadas = [];
+                const serverData = response.data;
+                const leccionId = serverData.data?.id || serverData.data?.leccion_id;
+
+                // Guardar también en el almacenamiento local para que aparezca en el listado y en multimedia
+                if (customStore) {
+                    const idiomaKey = normalizarIdiomaKey(idioma);
+                    const leccionLocal = {
+                        ...datosLeccion,
+                        actividades: actividadesConvertidas,
+                        idiomaKey,
+                        idiomaLabel: idioma,
+                        estado: 'activa',
+                        id: leccionId || undefined,
+                        esCustom: true,
+                        creado_por: 'Administrador'
+                    };
+                    customStore.addLesson(leccionLocal);
+                }
+
                 await cargarLecciones();
                 ocultarModalCrear();
-                
+
                 setTimeout(() => {
-                    const serverData = response.data;
-                    const leccionId = serverData.data?.id || serverData.data?.leccion_id;
-                    
                     if (leccionId) {
                         window.location.href = `/pages/admin/editor-leccion.html?id=${leccionId}`;
                     }
