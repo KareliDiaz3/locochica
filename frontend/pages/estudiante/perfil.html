@@ -1,0 +1,312 @@
+<!--
+/pages/estudiante/perfil.html
+Página de perfil del estudiante para gestionar información personal y académica.
+-->
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - SpeakLexi</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ✅ Estilos modulares con rutas absolutas -->
+    <link rel="stylesheet" href="/assets/css/custom-styles.css">
+    <link rel="stylesheet" href="/assets/css/animations.css">
+    
+    <!-- ✅ Config Tailwind -->
+    <script src="/assets/js/core/tailwind-config.js"></script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Navbar se cargará dinámicamente -->
+
+    <!-- Main Content -->
+    <div class="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="mb-8">
+                <a href="/pages/estudiante/estudiante-dashboard.html" class="inline-flex items-center text-primary-600 dark:text-primary-400 hover:underline mb-4">
+                    <i class="fas fa-arrow-left mr-2"></i>Volver al Dashboard
+                </a>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Mi Perfil</h1>
+                <p class="text-gray-600 dark:text-gray-400 mt-2">Administra tu información personal y preferencias</p>
+            </div>
+
+            <!-- Foto de Perfil -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 mb-6">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Foto de Perfil</h2>
+                <div class="flex items-center space-x-6">
+                    <div class="relative">
+                        <img id="profile-photo" src="https://ui-avatars.com/api/?name=Usuario&background=9333ea&color=fff&size=128" alt="Foto de perfil" class="w-32 h-32 rounded-full border-4 border-primary-500">
+                        <button id="change-photo-btn" class="absolute bottom-0 right-0 bg-primary-600 hover:bg-primary-700 text-white rounded-full p-2 shadow-lg transition-colors">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Formatos permitidos: JPG, PNG (máx. 5MB)</p>
+                        <input type="file" id="photo-input" accept="image/jpeg,image/png" class="hidden">
+                        <button onclick="document.getElementById('photo-input').click()" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                            <i class="fas fa-upload mr-2"></i>Subir Foto
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información Personal -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 mb-6">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Información Personal</h2>
+                <form id="personal-info-form" class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="nombre" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Nombre
+                            </label>
+                            <input
+                                type="text"
+                                id="nombre"
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                placeholder="Tu nombre"
+                            />
+                        </div>
+
+                        <div>
+                            <label for="apellidos" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Apellidos
+                            </label>
+                            <input
+                                type="text"
+                                id="apellidos"
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                placeholder="Tus apellidos"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Correo Electrónico
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            disabled
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                            placeholder="tu@email.com"
+                        />
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            <i class="fas fa-info-circle mr-1"></i>El correo no se puede cambiar
+                        </p>
+                    </div>
+
+                    <div>
+                        <label for="telefono" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Teléfono <span class="text-gray-400">(opcional)</span>
+                        </label>
+                        <input
+                            type="tel"
+                            id="telefono"
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                            placeholder="+52 123 456 7890"
+                        />
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button
+                            type="submit"
+                            id="save-personal-btn"
+                            class="px-6 py-3 bg-gradient-to-r from-secondary-600 to-primary-600 text-white rounded-xl font-semibold hover:from-secondary-700 hover:to-primary-700 transition-all"
+                        >
+                            <i class="fas fa-save mr-2"></i>Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Información Académica -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 mb-6">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Información Académica</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="p-4 bg-primary-50 dark:bg-primary-900/20 rounded-xl border border-primary-200 dark:border-primary-800">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Idioma Actual</p>
+                        <p class="text-2xl font-bold text-primary-600 dark:text-primary-400" id="idioma-display">-</p>
+                    </div>
+                    <div class="p-4 bg-secondary-50 dark:bg-secondary-900/20 rounded-xl border border-secondary-200 dark:border-secondary-800">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Nivel Actual</p>
+                        <p class="text-2xl font-bold text-secondary-600 dark:text-secondary-400" id="nivel-display">-</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="/pages/estudiante/cambiar-curso.html" class="inline-flex items-center text-primary-600 dark:text-primary-400 hover:underline">
+                        <i class="fas fa-exchange-alt mr-2"></i>Cambiar Curso o Nivel
+                    </a>
+                </div>
+            </div>
+
+            <!-- Zona de Peligro -->
+            <div class="bg-red-50 dark:bg-red-900/20 rounded-2xl shadow-lg border-2 border-red-200 dark:border-red-800 p-8">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-3xl text-red-600 dark:text-red-400"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-red-900 dark:text-red-200 mb-2">Zona de Peligro</h2>
+                        <p class="text-sm text-red-800 dark:text-red-300">
+                            Las acciones en esta sección son permanentes y no se pueden deshacer. Por favor, procede con precaución.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Desactivar Cuenta -->
+                <div class="mb-6 p-6 bg-white dark:bg-gray-800 rounded-xl border border-red-200 dark:border-red-800">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                <i class="fas fa-pause-circle text-orange-500 mr-2"></i>Desactivar Cuenta
+                            </h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                                Tu cuenta será desactivada temporalmente. Podrás reactivarla en cualquier momento iniciando sesión nuevamente dentro de los próximos 30 días.
+                            </p>
+                            <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1 mb-4">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Tu progreso se conservará</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Tus datos permanecerán guardados</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Puedes reactivar en 30 días</li>
+                            </ul>
+                        </div>
+                        <button
+                            id="deactivate-btn"
+                            class="ml-4 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
+                        >
+                            <i class="fas fa-pause mr-2"></i>Desactivar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Eliminar Cuenta -->
+                <div class="p-6 bg-white dark:bg-gray-800 rounded-xl border border-red-200 dark:border-red-800">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                <i class="fas fa-trash-alt text-red-600 mr-2"></i>Eliminar Cuenta Permanentemente
+                            </h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                                Esta acción eliminará permanentemente tu cuenta y todos tus datos. No podrás recuperar tu información después de esta acción.
+                            </p>
+                            <ul class="text-sm text-red-600 dark:text-red-400 space-y-1 mb-4">
+                                <li><i class="fas fa-times mr-2"></i>Todo tu progreso se perderá</li>
+                                <li><i class="fas fa-times mr-2"></i>Tus datos serán eliminados</li>
+                                <li><i class="fas fa-times mr-2"></i>Esta acción NO se puede deshacer</li>
+                            </ul>
+                        </div>
+                        <button
+                            id="delete-btn"
+                            class="ml-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
+                        >
+                            <i class="fas fa-trash mr-2"></i>Eliminar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación Desactivar -->
+    <div id="deactivate-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8 animate-fade-in">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-pause-circle text-3xl text-orange-600 dark:text-orange-400"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">¿Desactivar tu cuenta?</h3>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Podrás reactivarla iniciando sesión en los próximos 30 días
+                </p>
+            </div>
+            <div class="space-y-3">
+                <button
+                    id="confirm-deactivate-btn"
+                    class="w-full px-4 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-semibold transition-colors"
+                >
+                    <i class="fas fa-pause mr-2"></i>Sí, Desactivar Mi Cuenta
+                </button>
+                <button
+                    id="cancel-deactivate-btn"
+                    class="w-full px-4 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                >
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación Eliminar -->
+    <div id="delete-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8 animate-fade-in">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-exclamation-triangle text-3xl text-red-600 dark:text-red-400"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">¿Eliminar permanentemente?</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    Esta acción NO se puede deshacer. Todos tus datos se perderán para siempre.
+                </p>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Escribe "ELIMINAR" para confirmar
+                </label>
+                <input
+                    type="text"
+                    id="delete-confirmation-input"
+                    class="w-full px-4 py-3 border-2 border-red-300 dark:border-red-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    placeholder="ELIMINAR"
+                />
+            </div>
+
+            <div class="space-y-3">
+                <button
+                    id="confirm-delete-btn"
+                    disabled
+                    class="w-full px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <i class="fas fa-trash mr-2"></i>Sí, Eliminar Permanentemente
+                </button>
+                <button
+                    id="cancel-delete-btn"
+                    class="w-full px-4 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                >
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2 max-w-sm w-full"></div>
+
+    <!-- ============================================
+         ORDEN CORRECTO DE CARGA DE SCRIPTS
+         ============================================ -->
+
+    <!-- 1️⃣ PRIMERO: Configuración global (CRÍTICO) -->
+    <script src="/config/app-config.js"></script>
+
+    <!-- 2️⃣ DESPUÉS: Utilidades que dependen de config -->
+    <script src="/assets/js/core/api-client.js"></script>
+    <script src="/assets/js/core/form-validator.js"></script>
+    <script src="/assets/js/core/toast-manager.js"></script>
+    <script src="/assets/js/core/module-loader.js"></script>
+    <script src="/assets/js/core/theme-manager.js"></script>
+    <script src="/assets/js/core/navbar-loader.js"></script>
+    <script src="/assets/js/core/utils.js"></script>
+    <script src="/assets/js/data/student-progress.js"></script>
+
+    <!-- 3️⃣ FINALMENTE: Lógica específica de la página -->
+    <script src="/assets/js/pages/estudiante/perfil.js"></script>
+</body>
+</html>

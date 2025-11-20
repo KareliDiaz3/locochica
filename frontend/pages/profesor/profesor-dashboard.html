@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Profesor - SpeakLexi</title>
+    
+    <!-- ✅ PRELOAD CRÍTICO -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="preload" href="/assets/css/custom-styles.css" as="style">
+    
+    <!-- ✅ CSS EXTERNO -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ✅ TAILWIND CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- ✅ CSS INTERNO -->
+    <link rel="stylesheet" href="/assets/css/custom-styles.css">
+    
+    <!-- ✅ META OPTIMIZACIÓN -->
+    <meta name="description" content="SpeakLexi - Panel del Profesor">
+    <meta name="theme-color" content="#0ea5e9">
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- ✅ NAVBAR DINÁMICO -->
+    <div id="navbar-container"></div>
+    
+    <!-- ✅ CONTENIDO PRINCIPAL -->
+    <main class="min-h-screen pt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- ============================================
+                 HEADER DEL PROFESOR - MÓDULO 4
+            ============================================ -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6 border border-gray-100 dark:border-gray-700">
+                <h1 id="nombreProfesor" class="text-2xl font-bold text-gray-900 dark:text-white">Cargando...</h1>
+                <p id="cursoAsignado" class="text-gray-600 dark:text-gray-400 mt-1">Cargando información del curso...</p>
+                <p id="nivelIdioma" class="text-sm text-gray-500 dark:text-gray-400 mt-1">Cargando nivel e idioma...</p>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingDashboard" class="flex justify-center items-center py-20">
+                <div class="text-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+                    <p class="mt-4 text-gray-600 dark:text-gray-400">Cargando dashboard...</p>
+                </div>
+            </div>
+
+            <!-- Contenido Principal -->
+            <div id="dashboardContent" class="hidden">
+                <!-- ============================================
+                     CARDS DE ESTADÍSTICAS PRINCIPALES
+                ============================================ -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Total Estudiantes</p>
+                                <p id="totalEstudiantes" class="text-3xl font-bold text-indigo-600 dark:text-indigo-500 mt-1">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-users text-indigo-600 dark:text-indigo-400 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Promedio de la Clase</p>
+                                <p id="promedioClase" class="text-3xl font-bold text-green-600 dark:text-green-500 mt-1">0%</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-chart-line text-green-600 dark:text-green-400 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Lecciones Completadas</p>
+                                <p id="leccionesCompletadas" class="text-3xl font-bold text-blue-600 dark:text-blue-500 mt-1">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-book text-blue-600 dark:text-blue-400 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Tiempo Total</p>
+                                <p id="tiempoTotalHoras" class="text-3xl font-bold text-purple-600 dark:text-purple-500 mt-1">0h</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-clock text-purple-600 dark:text-purple-400 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================
+                     SECCIÓN DE TOP ESTUDIANTES
+                ============================================ -->
+                <section class="mb-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Top 5 Estudiantes</h2>
+                            <p class="text-gray-600 dark:text-gray-400">Estudiantes con mejor rendimiento</p>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                        <div id="topEstudiantes" class="space-y-4">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================
+                     SECCIÓN DE ALERTAS
+                ============================================ -->
+                <section class="mb-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Alertas Pendientes</h2>
+                            <p class="text-gray-600 dark:text-gray-400">Estudiantes que requieren atención inmediata</p>
+                        </div>
+                        <span id="alertasBadge" class="hidden bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                            0
+                        </span>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                        <div id="alertasContainer" class="space-y-4">
+                            <!-- Se llenará dinámicamente -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================
+                     BOTONES DE NAVEGACIÓN PRINCIPALES
+                ============================================ -->
+                <section class="mb-8">
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button id="btnVerEstadisticas" class="flex-1 px-6 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            <i class="fas fa-chart-bar mr-3"></i>
+                            Ver Todas las Estadísticas
+                        </button>
+                        <button id="btnRetroalimentacion" class="flex-1 px-6 py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            <i class="fas fa-comment-dots mr-3"></i>
+                            Gestionar Retroalimentación
+                        </button>
+                        <button id="btnPlanificacion" class="flex-1 px-6 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-xl transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            <i class="fas fa-calendar-plus mr-3"></i>
+                            Crear Plan de Estudio
+                        </button>
+                    </div>
+                </section>
+
+                <!-- ============================================
+                     GESTIÓN DE ESTUDIANTES
+                ============================================ -->
+                <section class="mb-12">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Lista Completa de Estudiantes</h2>
+                            <p class="text-gray-600 dark:text-gray-400">Gestión detallada de todos los estudiantes</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <select id="filtro-nivel" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm">
+                                <option value="">Todos los niveles</option>
+                                <option value="A1">A1</option>
+                                <option value="A2">A2</option>
+                                <option value="B1">B1</option>
+                                <option value="B2">B2</option>
+                                <option value="C1">C1</option>
+                                <option value="C2">C2</option>
+                            </select>
+                            
+                            <select id="filtro-idioma" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm">
+                                <option value="">Todos los idiomas</option>
+                                <option value="Inglés">Inglés</option>
+                                <option value="Francés">Francés</option>
+                                <option value="Alemán">Alemán</option>
+                                <option value="Italiano">Italiano</option>
+                            </select>
+                            
+                            <button id="btn-buscar" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors text-sm font-medium">
+                                <i class="fas fa-search mr-2"></i>Buscar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Estudiante</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nivel</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Idioma</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Lecciones</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Progreso</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">XP</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-estudiantes" class="divide-y divide-gray-200 dark:divide-gray-700">
+                                    <!-- Se llenará dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================
+         ORDEN DE CARGA
+    ============================================ -->
+    
+    <!-- 1️⃣ CONFIGURACIÓN GLOBAL -->
+    <script src="/config/app-config.js"></script>
+    
+    <!-- 2️⃣ CORE MODULES -->
+    <script src="/assets/js/core/utils.js"></script>
+    <script src="/assets/js/core/api-client.js"></script>
+    <script src="/assets/js/core/toast-manager.js"></script>
+    <script src="/assets/js/core/theme-manager.js"></script>
+    
+    <!-- 3️⃣ MÓDULOS ADICIONALES -->
+    <script src="/assets/js/core/module-loader.js"></script>
+    <script src="/assets/js/core/navbar-loader.js"></script>
+    
+    <!-- 4️⃣ LÓGICA DE PÁGINA -->
+    <script src="/assets/js/pages/profesor/dashboard.js"></script>
+</body>
+</html>

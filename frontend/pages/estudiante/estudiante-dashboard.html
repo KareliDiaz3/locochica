@@ -1,0 +1,159 @@
+<!--
+/pages/estudiante/estudiante-dashboard.html
+Panel de control principal para estudiantes después de iniciar sesión.
+-->
+<!DOCTYPE html>
+<html lang="es" class="h-full scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SpeakLexi</title>
+    
+    <!-- ✅ PRELOAD CRÍTICO -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="preload" href="/assets/css/custom-styles.css" as="style">
+    
+    <!-- ✅ CSS EXTERNO -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ✅ TAILWIND + CONFIG -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/assets/js/core/tailwind-config.js"></script>
+    
+    <!-- ✅ CSS INTERNO (crítico) -->
+    <link rel="stylesheet" href="/assets/css/custom-styles.css">
+    <link rel="stylesheet" href="/assets/css/animations.css">
+    
+    <!-- ✅ META OPTIMIZACIÓN -->
+    <meta name="description" content="SpeakLexi - Panel de control para estudiantes">
+    <meta name="theme-color" content="#4F46E5">
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- ✅ NAVBAR DINÁMICO -->
+    <div id="navbar-container"></div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
+        <!-- Header Mejorado -->
+        <div class="mb-8 animate-fade-in space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2" id="greeting">¡Bienvenido!</h2>
+                    <p class="text-gray-600 dark:text-gray-300">Continúa tu aprendizaje donde lo dejaste</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <a href="/pages/estudiante/lecciones.html" class="px-4 py-2 rounded-xl bg-primary-50 text-primary-600 dark:bg-primary-900/30 dark:text-primary-200 font-semibold hover:bg-primary-100 dark:hover:bg-primary-800/50 transition-colors">
+                        <i class="fas fa-play mr-2"></i>Ir a Lecciones
+                    </a>
+                    <button id="logout-dashboard-btn" class="px-4 py-2 rounded-xl bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-300 font-semibold hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Cerrar sesión
+                    </button>
+                </div>
+            </div>
+
+            <!-- Breadcrumb -->
+            <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                <span>Dashboard</span>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <span class="text-primary-600 dark:text-primary-400">Inicio</span>
+            </div>
+        </div>
+
+        <!-- ✅ STATS CARDS CONECTADAS A API -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Racha Actual -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Racha Actual</p>
+                        <p class="text-3xl font-bold text-orange-600 dark:text-orange-500 mt-1" id="dias-racha-stat">0</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">días seguidos</p>
+                    </div>
+                    <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fas fa-fire text-orange-600 dark:text-orange-400 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- XP Total -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">XP Total</p>
+                        <p class="text-3xl font-bold text-purple-600 dark:text-purple-500 mt-1" id="total-xp-stat">0</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">puntos acumulados</p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fas fa-star text-purple-600 dark:text-purple-400 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lecciones Completadas -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Lecciones</p>
+                        <p class="text-3xl font-bold text-blue-600 dark:text-blue-500 mt-1" id="lecciones-completadas-stat">0</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">completadas</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fas fa-book text-blue-600 dark:text-blue-400 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nivel Actual -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Nivel</p>
+                        <p class="text-3xl font-bold text-green-600 dark:text-green-500 mt-1" id="nivel-usuario-stat">A1</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" id="idioma-aprendizaje-stat">Inglés</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fas fa-chart-line text-green-600 dark:text-green-400 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ✅ CONTENEDOR DINÁMICO PARA DATOS DE API -->
+        <div id="contenido-dashboard" class="hidden">
+            <!-- El contenido se genera dinámicamente desde dashboard.js -->
+        </div>
+
+        <!-- ✅ LOADING STATE -->
+        <div id="loading-dashboard" class="flex items-center justify-center py-12">
+            <div class="text-center">
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mb-4"></div>
+                <p class="text-gray-600 dark:text-gray-400">Cargando tu dashboard...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2 max-w-sm w-full"></div>
+
+    <!-- ============================================
+         ORDEN DE CARGA OPTIMIZADO (CRÍTICO)
+    ============================================ -->
+    
+    <!-- 1️⃣ CONFIGURACIÓN GLOBAL (SIEMPRE PRIMERO) -->
+    <script src="/config/app-config.js"></script>
+    
+    <!-- 2️⃣ CORE MODULES (async para no bloquear) -->
+    <script src="/assets/js/core/utils.js" async></script>
+    <script src="/assets/js/core/api-client.js" async></script>
+    <script src="/assets/js/core/form-validator.js" async></script>
+    <script src="/assets/js/core/theme-manager.js" async></script>
+    <script src="/assets/js/core/toast-manager.js" async></script>
+    <script src="/assets/js/core/module-loader.js"></script>
+    <script src="/assets/js/data/student-progress.js"></script>
+    <script src="/assets/js/data/custom-lessons-store.js"></script>
+    <script src="/assets/js/core/navbar-loader.js" async></script>
+
+    <!-- 3️⃣ LÓGICA DE PÁGINA (defer para DOM listo) -->
+    <script type="module" src="/assets/js/pages/estudiante/dashboard.js"></script>
+</body>
+</html>

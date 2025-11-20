@@ -1,0 +1,405 @@
+<!--
+frontend/pages/admin/dashboard-admin.html
+-->
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - SpeakLexi</title>
+    
+    <!-- ✅ PRELOAD CRÍTICO -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="preload" href="/assets/css/custom-styles.css" as="style">
+    
+    <!-- ✅ CSS EXTERNO -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ✅ TAILWIND CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configuración inline de Tailwind
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#faf5ff',
+                            100: '#f3e8ff',
+                            200: '#e9d5ff',
+                            300: '#d8b4fe',
+                            400: '#c084fc',
+                            500: '#a855f7',
+                            600: '#9333ea',
+                            700: '#7e22ce',
+                            800: '#6b21a8',
+                            900: '#581c87',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- ✅ CSS INTERNO -->
+    <link rel="stylesheet" href="/assets/css/custom-styles.css">
+    <link rel="stylesheet" href="/assets/css/animations.css">
+    
+    <!-- ✅ APEXCHARTS -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    
+    <!-- ✅ META OPTIMIZACIÓN -->
+    <meta name="description" content="SpeakLexi - Panel de Administración">
+    <meta name="theme-color" content="#4F46E5">
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- ✅ NAVBAR DINÁMICO -->
+    <div id="navbar-container"></div>
+    
+    <!-- ✅ CONTENIDO PRINCIPAL -->
+    <main class="min-h-screen pt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Header -->
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Panel de Administración</h2>
+                <p class="text-gray-600 dark:text-gray-300">Gestión completa del sistema SpeakLexi</p>
+                
+                <!-- Breadcrumb -->
+                <div class="flex items-center gap-2 mt-4 text-sm text-gray-500 dark:text-gray-400">
+                    <span>Admin</span>
+                    <i class="fas fa-chevron-right text-xs"></i>
+                    <span class="text-purple-600 dark:text-purple-400">Dashboard</span>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Usuarios Totales</p>
+                            <p class="text-3xl font-bold text-blue-600 dark:text-blue-500 mt-1">1,247</p>
+                            <p class="text-xs text-green-600 dark:text-green-400 mt-1">
+                                <i class="fas fa-arrow-up mr-1"></i>12% este mes
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fas fa-users text-blue-600 dark:text-blue-400 text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Lecciones Activas</p>
+                            <p class="text-3xl font-bold text-green-600 dark:text-green-500 mt-1">156</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">+8 esta semana</p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fas fa-book text-green-600 dark:text-green-400 text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Profesores</p>
+                            <p class="text-3xl font-bold text-purple-600 dark:text-purple-500 mt-1">28</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Activos: 24</p>
+                        </div>
+                        <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fas fa-chalkboard-teacher text-purple-600 dark:text-purple-400 text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Actividad Hoy</p>
+                            <p class="text-3xl font-bold text-orange-600 dark:text-orange-500 mt-1">342</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">sesiones activas</p>
+                        </div>
+                        <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fas fa-chart-line text-orange-600 dark:text-orange-400 text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Grid -->
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                <!-- Left Column -->
+                <div class="xl:col-span-2 space-y-8">
+                    <!-- Gráfico de Actividad -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Actividad de Usuarios</h3>
+                            <div class="flex gap-2">
+                                <button class="px-3 py-1 text-sm bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-lg">7 días</button>
+                                <button class="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600">30 días</button>
+                            </div>
+                        </div>
+                        <div id="activity-chart" class="h-80"></div>
+                    </div>
+
+                    <!-- Gestión Rápida -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Gestión de Contenido -->
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Gestión de Contenido</h3>
+                            <div class="space-y-3">
+                                <button class="w-full flex items-center gap-3 p-4 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-xl border border-purple-200 dark:border-purple-800 transition-colors group">
+                                    <div class="w-10 h-10 bg-purple-100 dark:bg-purple-800 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-plus-circle text-purple-600 dark:text-purple-400"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="font-semibold text-gray-900 dark:text-white">Crear Nueva Lección</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Agregar contenido educativo</p>
+                                    </div>
+                                </button>
+                                
+                                <button class="w-full flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-xl border border-blue-200 dark:border-blue-800 transition-colors group">
+                                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-800 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-edit text-blue-600 dark:text-blue-400"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="font-semibold text-gray-900 dark:text-white">Editar Lecciones</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Modificar contenido existente</p>
+                                    </div>
+                                </button>
+                                
+                                <a href="/pages/admin/gestion-multimedia.html" class="w-full flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-xl border border-green-200 dark:border-green-800 transition-colors group">
+                                    <div class="w-10 h-10 bg-green-100 dark:bg-green-800 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-file-upload text-green-600 dark:text-green-400"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="font-semibold text-gray-900 dark:text-white">Agregar Multimedia</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Subir recursos educativos</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Gestión de Usuarios -->
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Gestión de Usuarios</h3>
+                            <div class="space-y-3">
+                                <button class="w-full flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-xl border border-blue-200 dark:border-blue-800 transition-colors group">
+                                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-800 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-user-plus text-blue-600 dark:text-blue-400"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="font-semibold text-gray-900 dark:text-white">Agregar Usuario</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Nuevo estudiante/profesor</p>
+                                    </div>
+                                </button>
+                                
+                                <button class="w-full flex items-center gap-3 p-4 bg-yellow-50 dark:bg-yellow-900/20 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 rounded-xl border border-yellow-200 dark:border-yellow-800 transition-colors group">
+                                    <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-800 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-list text-yellow-600 dark:text-yellow-400"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="font-semibold text-gray-900 dark:text-white">Ver Usuarios</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Lista completa</p>
+                                    </div>
+                                </button>
+                                
+                                <button class="w-full flex items-center gap-3 p-4 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 rounded-xl border border-orange-200 dark:border-orange-800 transition-colors group">
+                                    <div class="w-10 h-10 bg-orange-100 dark:bg-orange-800 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-user-shield text-orange-600 dark:text-orange-400"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="font-semibold text-gray-900 dark:text-white">Gestionar Permisos</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Roles y accesos</p>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de Usuarios Recientes -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Usuarios Recientes</h3>
+                            <button class="text-sm text-purple-600 dark:text-purple-400 hover:underline font-semibold">Ver todos</button>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                                        <th class="text-left py-3 text-sm font-semibold text-gray-600 dark:text-gray-400">Usuario</th>
+                                        <th class="text-left py-3 text-sm font-semibold text-gray-600 dark:text-gray-400">Rol</th>
+                                        <th class="text-left py-3 text-sm font-semibold text-gray-600 dark:text-gray-400">Estado</th>
+                                        <th class="text-left py-3 text-sm font-semibold text-gray-600 dark:text-gray-400">Fecha</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                    <!-- Se llenará dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="space-y-8">
+                    <!-- Métricas del Sistema -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Métricas del Sistema</h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-gray-600 dark:text-gray-400">Uso de CPU</span>
+                                    <span class="text-gray-900 dark:text-white">42%</span>
+                                </div>
+                                <div class="bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div class="bg-green-500 rounded-full h-2 transition-all duration-1000" style="width: 42%"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-gray-600 dark:text-gray-400">Memoria</span>
+                                    <span class="text-gray-900 dark:text-white">68%</span>
+                                </div>
+                                <div class="bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div class="bg-blue-500 rounded-full h-2 transition-all duration-1000" style="width: 68%"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-gray-600 dark:text-gray-400">Almacenamiento</span>
+                                    <span class="text-gray-900 dark:text-white">35%</span>
+                                </div>
+                                <div class="bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div class="bg-purple-500 rounded-full h-2 transition-all duration-1000" style="width: 35%"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-gray-600 dark:text-gray-400">Uptime</span>
+                                    <span class="text-green-600 dark:text-green-400 font-semibold">99.9%</span>
+                                </div>
+                                <div class="bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                    <div class="bg-green-500 rounded-full h-2 transition-all duration-1000" style="width: 99.9%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Distribución de Idiomas -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Distribución de Idiomas</h3>
+                        <div id="language-chart" class="h-64"></div>
+                    </div>
+
+                    <!-- Actividad Reciente -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Actividad Reciente</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-3 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+                                <div class="w-8 h-8 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-user-plus text-blue-600 dark:text-blue-400 text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">Nuevo usuario registrado</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">Ana López se unió hace 2 horas</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-3 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                                <div class="w-8 h-8 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-book text-green-600 dark:text-green-400 text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">Lección completada</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">Carlos Ruiz completó "Vocabulario Básico"</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-3 p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800">
+                                <div class="w-8 h-8 bg-purple-100 dark:bg-purple-800 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-chart-line text-purple-600 dark:text-purple-400 text-sm"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">Nivel alcanzado</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400">María García alcanzó el nivel B1</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Acciones Rápidas -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Acciones Rápidas</h3>
+                        
+                        <div class="grid grid-cols-2 gap-3">
+                            <button class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors group">
+                                <i class="fas fa-download text-gray-600 dark:text-gray-400 text-xl mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400"></i>
+                                <span class="text-sm text-gray-700 dark:text-gray-300">Reporte</span>
+                            </button>
+                            
+                            <button class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors group">
+                                <i class="fas fa-cog text-gray-600 dark:text-gray-400 text-xl mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400"></i>
+                                <span class="text-sm text-gray-700 dark:text-gray-300">Ajustes</span>
+                            </button>
+                            
+                            <button class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors group">
+                                <i class="fas fa-users text-gray-600 dark:text-gray-400 text-xl mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400"></i>
+                                <span class="text-sm text-gray-700 dark:text-gray-300">Equipo</span>
+                            </button>
+                            
+                            <button class="flex flex-col items-center justify-center p-4 rounded-xl bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors group">
+                                <i class="fas fa-question-circle text-gray-600 dark:text-gray-400 text-xl mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400"></i>
+                                <span class="text-sm text-gray-700 dark:text-gray-300">Ayuda</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================
+         ORDEN DE CARGA CORREGIDO
+    ============================================ -->
+    
+    <!-- 1️⃣ CONFIGURACIÓN GLOBAL -->
+    <script src="/config/app-config.js"></script>
+    
+    <!-- 2️⃣ CORE MODULES -->
+    <script src="/assets/js/core/utils.js"></script>
+    <script src="/assets/js/core/api-client.js"></script>
+    <script src="/assets/js/core/form-validator.js"></script>
+    <script src="/assets/js/core/toast-manager.js"></script>
+    <script src="/assets/js/core/theme-manager.js"></script>
+    
+    <!-- 3️⃣ MÓDULOS ADICIONALES -->
+    <script src="/assets/js/core/module-loader.js"></script>
+    <script src="/assets/js/core/navbar-loader.js"></script>
+    
+    <!-- 4️⃣ LÓGICA DE PÁGINA (al final) -->
+    <script src="/assets/js/pages/admin/dashboard.js"></script>
+</body>
+</html>

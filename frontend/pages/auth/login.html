@@ -1,0 +1,194 @@
+<!--
+/pages/auth/login.html
+Página de inicio de sesión para usuarios existentes.
+-->>
+<!DOCTYPE html>
+<html lang="es" class="h-full scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - SpeakLexi</title>
+    
+    <!-- ✅ PRELOAD CRÍTICO -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="preload" href="/assets/css/custom-styles.css" as="style">
+    
+    <!-- ✅ CSS EXTERNO -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ✅ TAILWIND + CONFIG -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/assets/js/core/tailwind-config.js"></script>
+    
+    <!-- ✅ CSS INTERNO (crítico) -->
+    <link rel="stylesheet" href="/assets/css/custom-styles.css">
+    <link rel="stylesheet" href="/assets/css/animations.css">
+    
+    <!-- ✅ META OPTIMIZACIÓN -->
+    <meta name="description" content="SpeakLexi - Plataforma de aprendizaje de idiomas">
+    <meta name="theme-color" content="#4F46E5">
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- ✅ NAVBAR DINÁMICO -->
+    <div id="navbar-container"></div>
+
+    <div class="min-h-screen flex items-center justify-center p-4 pt-20">
+        <div class="max-w-md w-full animate-fade-in">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-gradient-to-r from-secondary-600 to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <i class="fas fa-comments text-white text-2xl"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                    Bienvenido de nuevo
+                </h1>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Inicia sesión en tu cuenta SpeakLexi
+                </p>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
+                <div id="error-alert" class="hidden mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg animate-slide-in">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-exclamation-circle text-red-600 dark:text-red-400 mt-0.5"></i>
+                        <p id="error-message" class="text-sm text-red-800 dark:text-red-200"></p>
+                    </div>
+                </div>
+
+                <div id="deactivated-alert" class="hidden mb-4 p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg animate-slide-in">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-refresh text-orange-600 dark:text-orange-400 mt-0.5"></i>
+                        <div class="flex-1">
+                            <p class="text-sm font-semibold text-orange-900 dark:text-orange-100 mb-2">Tu cuenta está desactivada</p>
+                            <p id="deactivated-message" class="text-sm text-orange-800 dark:text-orange-200 mb-3"></p>
+                            <button id="reactivate-btn" class="w-full px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors">
+                                <i class="fas fa-refresh mr-2"></i>Reactivar mi cuenta
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-900/50">
+                    <button id="toggle-test-users" type="button" class="w-full flex items-center justify-between p-4 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <span class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <i class="fas fa-user text-primary-600"></i>
+                            Usuarios de Prueba
+                        </span>
+                        <i id="toggle-icon" class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div id="test-users-container" class="hidden p-4 space-y-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                        <!-- Usuarios de prueba se cargarán dinámicamente -->
+                    </div>
+                </div>
+
+                <form id="login-form" class="space-y-6">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Correo Electrónico
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                required
+                                class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
+                                placeholder="tu@email.com"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Contraseña
+                            </label>
+                            <a href="recuperar-contrasena.html" class="text-sm text-primary-600 dark:text-primary-400 hover:underline transition-colors">
+                                ¿Olvidaste tu contraseña?
+                            </a>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                required
+                                class="w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
+                                placeholder="••••••••"
+                            />
+                            <button
+                                type="button"
+                                id="toggle-password"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                            >
+                                <i id="eye-icon" class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        id="submit-btn"
+                        class="w-full px-4 py-4 bg-gradient-to-r from-secondary-600 to-primary-600 text-white rounded-xl font-semibold hover:from-secondary-700 hover:to-primary-700 transform hover:-translate-y-0.5 transition-all duration-200 shadow-lg hover:shadow-xl"
+                    >
+                        <span class="flex items-center justify-center">
+                            <i class="fas fa-sign-in-alt mr-2"></i>
+                            Iniciar Sesión
+                        </span>
+                    </button>
+                </form>
+
+                <div class="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
+                    ¿No tienes cuenta?
+                    <a href="registro.html" class="text-primary-600 dark:text-primary-400 hover:underline font-medium transition-colors">
+                        Regístrate aquí
+                    </a>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center">
+                <div class="grid grid-cols-3 gap-4 text-xs text-gray-500 dark:text-gray-400">
+                    <div class="flex items-center justify-center gap-1">
+                        <i class="fas fa-shield-alt text-green-500"></i>
+                        <span>Seguro</span>
+                    </div>
+                    <div class="flex items-center justify-center gap-1">
+                        <i class="fas fa-bolt text-yellow-500"></i>
+                        <span>Rápido</span>
+                    </div>
+                    <div class="flex items-center justify-center gap-1">
+                        <i class="fas fa-users text-blue-500"></i>
+                        <span>Confiable</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2 max-w-sm w-full"></div>
+
+    <!-- ============================================
+         ORDEN DE CARGA OPTIMIZADO (CRÍTICO)
+    ============================================ -->
+    
+    <!-- 1️⃣ CONFIGURACIÓN GLOBAL (SIEMPRE PRIMERO) -->
+    <script src="/config/app-config.js"></script>
+    
+    <!-- 2️⃣ CORE MODULES (async para no bloquear) -->
+    <script src="/assets/js/core/utils.js" async></script>
+    <script src="/assets/js/core/api-client.js" async></script>
+    <script src="/assets/js/core/form-validator.js" async></script>
+    <script src="/assets/js/core/theme-manager.js" async></script>
+    <script src="/assets/js/core/toast-manager.js" async></script>
+    <script src="/assets/js/core/module-loader.js"></script>
+    <script src="/assets/js/core/navbar-loader.js" async></script>
+    
+    <!-- 3️⃣ LÓGICA DE PÁGINA (defer para DOM listo) -->
+    <script src="/assets/js/pages/auth/login.js" defer></script>
+</body>
+</html>

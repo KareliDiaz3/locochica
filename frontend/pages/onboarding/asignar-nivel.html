@@ -1,0 +1,69 @@
+<!--
+/pages/onboarding/asignar-nivel.html
+Página de asignación de nivel para nuevos usuarios después del registro.
+-->
+<!DOCTYPE html>
+<html lang="es" class="h-full scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asignar Nivel - SpeakLexi</title>
+    
+    <!-- ✅ PRELOAD CRÍTICO -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="preload" href="/assets/css/custom-styles.css" as="style">
+    
+    <!-- ✅ CSS EXTERNO -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ✅ TAILWIND + CONFIG -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/assets/js/core/tailwind-config.js"></script>
+    
+    <!-- ✅ CSS INTERNO (crítico) -->
+    <link rel="stylesheet" href="/assets/css/custom-styles.css">
+    <link rel="stylesheet" href="/assets/css/animations.css">
+    
+    <!-- ✅ META OPTIMIZACIÓN -->
+    <meta name="description" content="SpeakLexi - Asigna tu nivel de idioma para personalizar tu aprendizaje">
+    <meta name="theme-color" content="#4F46E5">
+</head>
+<body class="h-full bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+    <!-- ✅ NAVBAR DINÁMICO -->
+    <div id="navbar-container"></div>
+
+    <div class="min-h-screen flex items-center justify-center p-4 pt-20">
+        <div class="max-w-4xl w-full">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                    SpeakLexi
+                </h1>
+                <p id="subtitle" class="text-gray-600 dark:text-gray-300">Asigna tu nivel</p>
+            </div>
+
+            <div id="content-container"></div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2 max-w-sm w-full"></div>
+
+    <!-- ============================================
+         ORDEN DE CARGA OPTIMIZADO (CRÍTICO)
+    ============================================ -->
+    
+    <!-- 1️⃣ CONFIGURACIÓN GLOBAL (SIEMPRE PRIMERO) -->
+    <script src="/config/app-config.js"></script>
+    
+    <!-- 2️⃣ CORE MODULES (async para no bloquear) -->
+    <script src="/assets/js/core/utils.js" async></script>
+    <script src="/assets/js/core/api-client.js" async></script>
+    <script src="/assets/js/core/form-validator.js" async></script>
+    <script src="/assets/js/core/theme-manager.js" async></script>
+    <script src="/assets/js/core/toast-manager.js" async></script>
+    <script src="/assets/js/core/module-loader.js"></script>
+    <script src="/assets/js/core/navbar-loader.js" async></script>
+    
+    <!-- 3️⃣ LÓGICA DE PÁGINA (defer para DOM listo) -->
+    <script src="/assets/js/pages/onboarding/asignar-nivel.js" defer></script>
+</body>
+</html>

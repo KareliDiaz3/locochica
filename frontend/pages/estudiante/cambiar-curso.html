@@ -1,0 +1,298 @@
+<!--
+/pages/estudiante/cambiar-curso.html
+Página para que los estudiantes cambien su idioma de aprendizaje y nivel actual.
+-->
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambiar Curso - SpeakLexi</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ✅ Estilos modulares con rutas absolutas -->
+    <link rel="stylesheet" href="/assets/css/custom-styles.css">
+    <link rel="stylesheet" href="/assets/css/animations.css">
+    
+    <!-- ✅ Config Tailwind -->
+    <script src="/assets/js/core/tailwind-config.js"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300">
+    <!-- Navbar se cargará dinámicamente -->
+
+    <!-- Main Content -->
+    <div class="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="mb-8">
+                <a href="/pages/estudiante/perfil.html" class="inline-flex items-center text-primary-600 dark:text-primary-400 hover:underline mb-4">
+                    <i class="fas fa-arrow-left mr-2"></i>Volver al Perfil
+                </a>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Cambiar Curso</h1>
+                <p class="text-gray-600 dark:text-gray-400 mt-2">Modifica tu idioma de aprendizaje o tu nivel actual</p>
+            </div>
+
+            <!-- Información Actual -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8 mb-6">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Tu Configuración Actual</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="p-6 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/30 rounded-xl border-2 border-primary-200 dark:border-primary-700">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-sm font-medium text-primary-700 dark:text-primary-300">Idioma Actual</p>
+                            <i class="fas fa-globe text-2xl text-primary-600 dark:text-primary-400"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-primary-600 dark:text-primary-400" id="current-idioma">-</p>
+                    </div>
+                    <div class="p-6 bg-gradient-to-br from-secondary-50 to-secondary-100 dark:from-secondary-900/30 dark:to-secondary-800/30 rounded-xl border-2 border-secondary-200 dark:border-secondary-700">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-sm font-medium text-secondary-700 dark:text-secondary-300">Nivel Actual</p>
+                            <i class="fas fa-chart-line text-2xl text-secondary-600 dark:text-secondary-400"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-secondary-600 dark:text-secondary-400" id="current-nivel">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Cambio -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Cambiar Configuración</h2>
+                
+                <form id="change-course-form" class="space-y-8">
+                    <!-- Seleccionar Idioma -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                            <i class="fas fa-globe text-primary-600 mr-2"></i>Selecciona tu Idioma
+                        </label>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="idioma" value="Inglés" class="peer hidden" />
+                                <div class="p-6 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-primary-300 dark:hover:border-primary-600 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <span class="text-3xl">🇬🇧</span>
+                                            <div>
+                                                <p class="font-semibold text-gray-900 dark:text-white">Inglés</p>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">English</p>
+                                            </div>
+                                        </div>
+                                        <i class="fas fa-check-circle text-2xl text-gray-300 dark:text-gray-600 peer-checked:text-primary-600"></i>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="idioma" value="Francés" class="peer hidden" />
+                                <div class="p-6 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-primary-300 dark:hover:border-primary-600 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <span class="text-3xl">🇫🇷</span>
+                                            <div>
+                                                <p class="font-semibold text-gray-900 dark:text-white">Francés</p>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">Français</p>
+                                            </div>
+                                        </div>
+                                        <i class="fas fa-check-circle text-2xl text-gray-300 dark:text-gray-600 peer-checked:text-primary-600"></i>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="idioma" value="Alemán" class="peer hidden" />
+                                <div class="p-6 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-primary-300 dark:hover:border-primary-600 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <span class="text-3xl">🇩🇪</span>
+                                            <div>
+                                                <p class="font-semibold text-gray-900 dark:text-white">Alemán</p>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">Deutsch</p>
+                                            </div>
+                                        </div>
+                                        <i class="fas fa-check-circle text-2xl text-gray-300 dark:text-gray-600 peer-checked:text-primary-600"></i>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="idioma" value="Italiano" class="peer hidden" />
+                                <div class="p-6 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-primary-300 dark:hover:border-primary-600 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <span class="text-3xl">🇮🇹</span>
+                                            <div>
+                                                <p class="font-semibold text-gray-900 dark:text-white">Italiano</p>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">Italiano</p>
+                                            </div>
+                                        </div>
+                                        <i class="fas fa-check-circle text-2xl text-gray-300 dark:text-gray-600 peer-checked:text-primary-600"></i>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="idioma" value="Portugués" class="peer hidden" />
+                                <div class="p-6 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-primary-300 dark:hover:border-primary-600 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <span class="text-3xl">🇵🇹</span>
+                                            <div>
+                                                <p class="font-semibold text-gray-900 dark:text-white">Portugués</p>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">Português</p>
+                                            </div>
+                                        </div>
+                                        <i class="fas fa-check-circle text-2xl text-gray-300 dark:text-gray-600 peer-checked:text-primary-600"></i>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="idioma" value="Japonés" class="peer hidden" />
+                                <div class="p-6 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-primary-300 dark:hover:border-primary-600 peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20 transition-all">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <span class="text-3xl">🇯🇵</span>
+                                            <div>
+                                                <p class="font-semibold text-gray-900 dark:text-white">Japonés</p>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">日本語</p>
+                                            </div>
+                                        </div>
+                                        <i class="fas fa-check-circle text-2xl text-gray-300 dark:text-gray-600 peer-checked:text-primary-600"></i>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Seleccionar Nivel -->
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                            <i class="fas fa-chart-line text-secondary-600 mr-2"></i>Selecciona tu Nivel
+                        </label>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="nivel" value="A1" class="peer hidden" />
+                                <div class="p-6 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-secondary-300 dark:hover:border-secondary-600 peer-checked:border-secondary-500 peer-checked:bg-secondary-50 dark:peer-checked:bg-secondary-900/20 transition-all">
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">A1</p>
+                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Principiante</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Empezando desde cero</p>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="nivel" value="A2" class="peer hidden" />
+                                <div class="p-6 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-secondary-300 dark:hover:border-secondary-600 peer-checked:border-secondary-500 peer-checked:bg-secondary-50 dark:peer-checked:bg-secondary-900/20 transition-all">
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">A2</p>
+                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Elemental</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Conocimientos básicos</p>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="nivel" value="B1" class="peer hidden" />
+                                <div class="p-6 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-secondary-300 dark:hover:border-secondary-600 peer-checked:border-secondary-500 peer-checked:bg-secondary-50 dark:peer-checked:bg-secondary-900/20 transition-all">
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">B1</p>
+                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Intermedio</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Conversación cotidiana</p>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="nivel" value="B2" class="peer hidden" />
+                                <div class="p-6 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-secondary-300 dark:hover:border-secondary-600 peer-checked:border-secondary-500 peer-checked:bg-secondary-50 dark:peer-checked:bg-secondary-900/20 transition-all">
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">B2</p>
+                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Intermedio Alto</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Fluidez general</p>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="nivel" value="C1" class="peer hidden" />
+                                <div class="p-6 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-secondary-300 dark:hover:border-secondary-600 peer-checked:border-secondary-500 peer-checked:bg-secondary-50 dark:peer-checked:bg-secondary-900/20 transition-all">
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">C1</p>
+                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Avanzado</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Dominio del idioma</p>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="nivel" value="C2" class="peer hidden" />
+                                <div class="p-6 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-secondary-300 dark:hover:border-secondary-600 peer-checked:border-secondary-500 peer-checked:bg-secondary-50 dark:peer-checked:bg-secondary-900/20 transition-all">
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold text-gray-900 dark:text-white mb-1">C2</p>
+                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Maestría</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Nivel nativo</p>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Advertencia -->
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 dark:text-yellow-400 mt-0.5"></i>
+                            <div>
+                                <p class="text-sm font-medium text-yellow-900 dark:text-yellow-100 mb-1">Importante</p>
+                                <p class="text-sm text-yellow-800 dark:text-yellow-200">
+                                    Al cambiar tu curso o nivel, tu progreso actual se mantendrá, pero las lecciones disponibles cambiarán según tu nueva selección.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="flex gap-4">
+                        <a href="/pages/estudiante/perfil.html" class="flex-1 px-6 py-4 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-all text-center">
+                            Cancelar
+                        </a>
+                        <button
+                            type="submit"
+                            id="submit-btn"
+                            class="flex-1 px-6 py-4 bg-gradient-to-r from-secondary-600 to-primary-600 text-white rounded-xl font-semibold hover:from-secondary-700 hover:to-primary-700 transition-all"
+                        >
+                            <i class="fas fa-save mr-2"></i>Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2 max-w-sm w-full"></div>
+
+    <!-- ============================================
+         ORDEN CORRECTO DE CARGA DE SCRIPTS
+         ============================================ -->
+
+    <!-- 1️⃣ PRIMERO: Configuración global (CRÍTICO) -->
+    <script src="/config/app-config.js"></script>
+
+    <!-- 2️⃣ DESPUÉS: Utilidades que dependen de config -->
+    <script src="/assets/js/core/api-client.js"></script>
+    <script src="/assets/js/core/form-validator.js"></script>
+    <script src="/assets/js/core/toast-manager.js"></script>
+    <script src="/assets/js/core/module-loader.js"></script>
+    <script src="/assets/js/core/theme-manager.js"></script>
+    <script src="/assets/js/core/navbar-loader.js"></script>
+    <script src="/assets/js/core/utils.js"></script>
+    <script src="/assets/js/data/student-progress.js"></script>
+
+    <!-- 3️⃣ FINALMENTE: Lógica específica de la página -->
+    <script src="/assets/js/pages/estudiante/cambiar-curso.js"></script>
+</body>
+</html>

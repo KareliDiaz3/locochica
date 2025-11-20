@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Multimedia - SpeakLexi</title>
+
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+
+    <link rel="stylesheet" href="/assets/css/custom-styles.css">
+    <link rel="stylesheet" href="/assets/css/animations.css">
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div id="navbar-container"></div>
+
+    <main class="min-h-screen pt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <header class="mb-8">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Gestión de Multimedia</h2>
+                        <p class="text-gray-600 dark:text-gray-300">Sube imágenes, audios o videos para enriquecer cada lección.</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                        <a href="/pages/admin/admin-dashboard.html" class="hover:text-primary-600">Admin</a>
+                        <i class="fas fa-chevron-right text-xs"></i>
+                        <span class="text-primary-600 dark:text-primary-400 font-semibold">Multimedia</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <section class="lg:col-span-1 space-y-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Selecciona una lección</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Puedes elegir tanto lecciones base como las creadas por el administrador.</p>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Lección</label>
+                        <select id="lesson-select" class="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent"></select>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Las lecciones personalizadas aparecen marcadas como "Custom".</p>
+                    </div>
+
+                    <div id="lesson-summary" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 space-y-2">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                            <i class="fas fa-book-open text-primary-600"></i>
+                            Información de la lección
+                        </h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-300" id="summary-title">Selecciona una lección para ver sus detalles.</p>
+                        <div id="summary-tags" class="flex flex-wrap gap-2 text-xs"></div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-primary-600 to-indigo-600 rounded-2xl shadow-xl p-6 text-white space-y-3">
+                        <h3 class="text-lg font-semibold">Consejos rápidos</h3>
+                        <ul class="space-y-2 text-sm text-white/90">
+                            <li class="flex gap-2 items-start">
+                                <i class="fas fa-check-circle mt-1"></i>
+                                Prefiere imágenes en formato JPG/PNG de máximo 2 MB.
+                            </li>
+                            <li class="flex gap-2 items-start">
+                                <i class="fas fa-music mt-1"></i>
+                                Para audios, utiliza enlaces MP3 seguros (HTTPS).
+                            </li>
+                            <li class="flex gap-2 items-start">
+                                <i class="fas fa-video mt-1"></i>
+                                Los videos pueden ser enlaces embebidos de YouTube/Vimeo.
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="lg:col-span-2 space-y-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+                        <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Agregar recurso multimedia</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Sube recursos visuales o auditivos para reforzar la lección seleccionada.</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-primary-100 text-primary-600 dark:bg-primary-900/30 dark:text-primary-300" id="media-count-badge">
+                                0 recursos
+                            </span>
+                        </div>
+
+                        <form id="form-multimedia" class="space-y-4">
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tipo de recurso *</label>
+                                    <select name="tipo" required class="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                        <option value="image">Imagen</option>
+                                        <option value="audio">Audio</option>
+                                        <option value="video">Video</option>
+                                        <option value="document">Documento</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Título *</label>
+                                    <input type="text" name="titulo" required placeholder="Ej: Pronunciación del sonido TH" class="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Descripción (opcional)</label>
+                                <textarea name="descripcion" rows="3" class="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="Describe cómo se debe usar el recurso en la lección."></textarea>
+                            </div>
+
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">URL del recurso *</label>
+                                    <input type="url" name="url" required placeholder="https://..." class="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Miniatura (opcional)</label>
+                                    <input type="url" name="thumbnail" placeholder="https://imagen.com/preview.png" class="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="w-full md:w-auto px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl transition-colors">
+                                <i class="fas fa-cloud-upload-alt mr-2"></i>Agregar recurso
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+                        <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Recursos de la lección</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Arrastra para copiar enlaces o haz clic para previsualizar.</p>
+                            </div>
+                            <div class="flex gap-2 text-sm text-gray-500 dark:text-gray-400">
+                                <span class="flex items-center gap-1"><i class="fas fa-image text-pink-500"></i> Imagen</span>
+                                <span class="flex items-center gap-1"><i class="fas fa-music text-green-500"></i> Audio</span>
+                                <span class="flex items-center gap-1"><i class="fas fa-video text-blue-500"></i> Video</span>
+                            </div>
+                        </div>
+
+                        <div id="media-list" class="grid md:grid-cols-2 gap-4">
+                            <div class="col-span-full text-center text-gray-500 dark:text-gray-400 py-8 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl">
+                                Selecciona una lección para ver sus recursos.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2 max-w-sm w-full"></div>
+
+    <script src="/config/app-config.js"></script>
+    <script src="/assets/js/core/utils.js"></script>
+    <script src="/assets/js/core/api-client.js"></script>
+    <script src="/assets/js/core/toast-manager.js"></script>
+    <script src="/assets/js/core/theme-manager.js"></script>
+    <script src="/assets/js/core/module-loader.js"></script>
+    <script src="/assets/js/core/navbar-loader.js"></script>
+    <script src="/assets/js/data/lecciones-data.js"></script>
+    <script src="/assets/js/data/custom-lessons-store.js"></script>
+    <script src="/assets/js/pages/admin/gestion-multimedia.js"></script>
+</body>
+</html>
+
