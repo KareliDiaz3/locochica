@@ -128,27 +128,34 @@ class ProfesorDashboard {
             return;
         }
 
-        const { 
-            profesor, 
-            estadisticas, 
+        const {
+            profesor,
+            estadisticas,
             top_estudiantes = [],
             estudiantes_recientes = [],
-            alertas = []
+            alertas = [],
+            // Compatibilidad con payloads camelCase (ej: topEstudiantes, estudiantes)
+            topEstudiantes = [],
+            estudiantes = []
         } = this.profesorData;
 
         // Header con información del profesor
         this.actualizarHeaderProfesor(profesor);
-        
+
         // Estadísticas principales
         this.actualizarEstadisticasPrincipales(estadisticas);
-        
-        // Top 5 estudiantes
-        const estudiantesParaTop = top_estudiantes.length > 0 ? top_estudiantes : estudiantes_recientes;
-        this.renderizarTopEstudiantes(estudiantesParaTop);
-        
+
+        // Top 5 estudiantes: prioriza snake_case, luego camelCase y finalmente lista completa
+        const candidatosTop = top_estudiantes.length ? top_estudiantes : topEstudiantes;
+        const listaEstudiantes = estudiantes_recientes.length ? estudiantes_recientes : estudiantes;
+        const topNormalizados = this.normalizarEstudiantes(candidatosTop.length ? candidatosTop : listaEstudiantes);
+        const listaNormalizada = this.normalizarEstudiantes(listaEstudiantes);
+
+        this.renderizarTopEstudiantes(topNormalizados);
+
         // Lista completa de estudiantes
-        this.renderizarListaEstudiantes(estudiantes_recientes);
-        
+        this.renderizarListaEstudiantes(listaNormalizada);
+
         // Alertas
         this.renderizarAlertas(alertas);
 
@@ -200,6 +207,33 @@ class ProfesorDashboard {
             const horas = Math.round(estadisticas.tiempo_total_horas || 0);
             elementos.tiempoTotalHoras.textContent = `${horas}h`;
         }
+    }
+
+    normalizarEstudiantes(estudiantes = []) {
+        return (estudiantes || []).map((est, index) => {
+            const nombreCompleto = est.nombre_completo || est.estudiante_nombre || `${est.nombre || ''} ${est.primer_apellido || ''}`.trim();
+            const [nombre, ...restoApellidos] = nombreCompleto.trim().split(' ');
+            const primer_apellido = est.primer_apellido || restoApellidos.join(' ');
+
+            return {
+                id: est.id || est.usuario_id || est.estudiante_id || index + 1,
+                nombre: est.nombre || nombre || '',
+                primer_apellido: primer_apellido || '',
+                nombre_completo: nombreCompleto || `${nombre || ''} ${primer_apellido || ''}`.trim(),
+                correo: est.correo || est.email || '',
+                nivel_actual: est.nivel_actual || est.nivel || est.nivel_xp || 'A1',
+                idioma_aprendizaje: est.idioma_aprendizaje || est.idioma || 'Inglés',
+                total_xp: est.total_xp || 0,
+                lecciones_completadas: est.lecciones_completadas || est.leccionesCompletadas || 0,
+                lecciones_iniciadas: est.lecciones_iniciadas || est.lecciones_en_progreso || est.lecciones || 0,
+                promedio_general: est.promedio_general ?? est.promedio_progreso ?? est.porcentaje ?? 0,
+                promedio_progreso: est.promedio_progreso ?? est.promedio_general ?? est.porcentaje ?? 0,
+                tiempo_total_estudio: est.tiempo_total_estudio || est.tiempo_total_horas || 0,
+                racha_actual: est.racha_actual || est.racha_dias || 0,
+                curso_nombre: est.curso_nombre || '',
+                curso_id: est.curso_id || est.leccion_id || null
+            };
+        });
     }
 
     renderizarTopEstudiantes(estudiantes) {
@@ -286,7 +320,7 @@ class ProfesorDashboard {
 
         container.innerHTML = estudiantes.map(est => {
             // ✅ MAPEO CORRECTO: Obtener ID correcto
-            const estudianteId = est.id || est.usuario_id;
+            const estudianteId = est.id || est.usuario_id || est.estudiante_id;
             
             return `
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
