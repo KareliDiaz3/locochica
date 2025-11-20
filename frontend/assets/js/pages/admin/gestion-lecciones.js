@@ -823,15 +823,15 @@
             const rol = (usuario.rol || usuario.role || '').toLowerCase();
             console.log('👔 Rol del usuario:', rol);
             
-            const rolesAdmin = ['admin', 'administrador'];
-            
-            if (!rolesAdmin.includes(rol)) {
-                console.warn('⚠️ Usuario sin permisos de admin. Rol:', rol);
-                mostrarErrorPermisos('No tienes permisos para acceder a esta página');
-                return false;
-            }
-            
-            console.log('✅ Usuario con permisos de admin verificado');
+        const rolesPermitidos = ['admin', 'administrador', 'profesor'];
+        
+        if (!rolesPermitidos.includes(rol)) {
+            console.warn('⚠️ Usuario sin permisos de gestión. Rol:', rol);
+            mostrarErrorPermisos('No tienes permisos para gestionar lecciones (se requiere rol de administrador o profesor).');
+            return false;
+        }
+        
+        console.log('✅ Usuario autorizado para gestionar lecciones');
             return true;
             
         } catch (error) {

@@ -42,6 +42,9 @@ class ProfesorController {
             // Obtener top estudiantes
             const topEstudiantes = await ProfesorModel.obtenerTopEstudiantes(profesorId, 5);
             
+            // Obtener lista completa de estudiantes asignados
+            const estudiantesAsignados = await ProfesorModel.obtenerEstudiantes(profesorId);
+            
             // Obtener alertas no revisadas
             const alertas = await ProfesorModel.obtenerAlertas(profesorId, true);
             
@@ -63,7 +66,9 @@ class ProfesorController {
                         estudiantes_activos: estadisticas.estudiantes_activos || 0,
                         promedio_xp: estadisticas.promedio_xp || 0
                     },
-                    estudiantes_recientes: topEstudiantes,
+                    top_estudiantes: topEstudiantes,
+                    estudiantes: estudiantesAsignados,
+                    estudiantes_recientes: estudiantesAsignados,
                     alertas: alertas.slice(0, 3), // Solo primeras 3
                     retroalimentacion: statsRetroalimentacion,
                     planificacion: statsPlanificacion
